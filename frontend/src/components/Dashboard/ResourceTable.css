@@ -1,0 +1,207 @@
+.resource-table-container {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.table-stats {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+}
+
+.table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.resource-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.resource-table thead {
+  background: var(--bg-tertiary);
+}
+
+.resource-table th {
+  text-align: left;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.resource-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
+}
+
+.resource-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.resource-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.resource-table td {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.pod-name,
+.deployment-name {
+  font-weight: 500;
+  color: var(--color-primary);
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.namespace-badge {
+  display: inline-block;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.healthy {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.status-badge.degraded {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.status-badge.down {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+}
+
+.status-badge.running {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.icon-success {
+  color: var(--color-success);
+}
+
+.icon-warning {
+  color: var(--color-warning);
+}
+
+.icon-danger {
+  color: var(--color-danger);
+}
+
+.pod-count {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.age-cell {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.image-cell code {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+@media (max-width: 1024px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .resource-table {
+    min-width: 800px;
+  }
+}
+
+.service-type-badge {
+  display: inline-block;
+  background: var(--bg-tertiary);
+  color: var(--color-info);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.ip-cell {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.ports-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.port-item {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .resource-table th,
+  .resource-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}

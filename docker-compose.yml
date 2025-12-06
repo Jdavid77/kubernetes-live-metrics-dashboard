@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - KUBECONFIG=/root/.kube/config
+      - CORS_ORIGIN=http://localhost:3000
+      - METRICS_REFRESH_INTERVAL=5s
+      - LOG_LEVEL=info
+    volumes:
+      - ~/.kube/config:/root/.kube/config:ro
+    restart: unless-stopped
+    networks:
+      - k8s-dashboard
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:8080"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+      - REACT_APP_WS_URL=ws://localhost:8080
+      - REACT_APP_REFRESH_INTERVAL=5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - k8s-dashboard
+
+networks:
+  k8s-dashboard:
+    driver: bridge

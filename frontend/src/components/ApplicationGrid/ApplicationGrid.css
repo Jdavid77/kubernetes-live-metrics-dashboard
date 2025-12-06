@@ -1,0 +1,29 @@
+.applications-section {
+  margin-top: var(--spacing-2xl);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.application-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.no-applications {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .application-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}

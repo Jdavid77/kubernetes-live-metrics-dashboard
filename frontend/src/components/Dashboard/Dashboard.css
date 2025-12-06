@@ -1,0 +1,10 @@
+.dashboard {
+  padding: var(--spacing-2xl) 0;
+  min-height: calc(100vh - 100px);
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: var(--spacing-lg) 0;
+  }
+}
