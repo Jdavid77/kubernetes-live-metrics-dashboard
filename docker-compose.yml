@@ -26,9 +26,17 @@ services:
     ports:
       - "3000:8080"
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_WS_URL=ws://localhost:8080
+      - REACT_APP_API_URL="http://localhost:8080"
+      - REACT_APP_WS_URL="ws://localhost:8080"
       - REACT_APP_REFRESH_INTERVAL=5000
+      - REACT_APP_GITHUB_URL="https://github.com/Jdavid77/home-cluster"
+      - REACT_APP_LINKEDIN_URL="https://www.linkedin.com/in/joaodavid77"
+      - REACT_APP_INFRA_OS=K3s
+      - REACT_APP_INFRA_STORAGE=Ceph
+      - REACT_APP_INFRA_CNI=Cilium
+      - REACT_APP_INFRA_LOAD_BALANCER=Traefik
+      - REACT_APP_INFRA_GITOPS=FluxCD
+      - REACT_APP_LOGO_URL="https://avatars.githubusercontent.com/u/49655819?v=4"
     depends_on:
       - backend
     restart: unless-stopped

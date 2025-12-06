@@ -1,9 +1,11 @@
 import React from 'react';
 import { FiActivity } from 'react-icons/fi';
+import config from '../../config/env';
 import './Header.css';
 
 const Header = ({ isConnected }) => {
-  const logoUrl = process.env.REACT_APP_LOGO_URL || '';
+  const logoUrl = config.LOGO_URL;
+  const version = config.VERSION;
 
   return (
     <header className="header">
@@ -19,7 +21,7 @@ const Header = ({ isConnected }) => {
             </div>
             <div>
               <h1>Kubernetes Dashboard</h1>
-              <span className="version">v1.0.0</span>
+              <span className="version">v{version}</span>
             </div>
           </div>
 

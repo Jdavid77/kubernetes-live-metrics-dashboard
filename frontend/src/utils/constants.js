@@ -1,7 +1,9 @@
+import config from '../config/env';
+
 // API configuration
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-export const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8080';
-export const REFRESH_INTERVAL = parseInt(process.env.REACT_APP_REFRESH_INTERVAL || '5000', 10);
+export const API_BASE_URL = config.API_URL;
+export const WS_BASE_URL = config.WS_URL;
+export const REFRESH_INTERVAL = config.REFRESH_INTERVAL;
 
 // Status colors
 export const STATUS_COLORS = {

@@ -1,43 +1,44 @@
 import React from 'react';
 import { FiServer, FiHardDrive, FiWifi, FiShare2, FiGitBranch, FiGithub, FiLinkedin } from 'react-icons/fi';
+import config from '../../config/env';
 import './Stack.css';
 
 const Stack = () => {
   const stackItems = [
     {
       category: 'OS',
-      value: process.env.REACT_APP_INFRA_OS || 'Talos',
+      value: config.INFRA_OS,
       icon: FiServer,
       bgColor: 'linear-gradient(135deg, #ff6b35 0%, #ff8952 100%)',
     },
     {
       category: 'Storage',
-      value: process.env.REACT_APP_INFRA_STORAGE || 'Longhorn/OpenEBS',
+      value: config.INFRA_STORAGE,
       icon: FiHardDrive,
       bgColor: 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)',
     },
     {
       category: 'CNI',
-      value: process.env.REACT_APP_INFRA_CNI || 'Cilium',
+      value: config.INFRA_CNI,
       icon: FiWifi,
       bgColor: 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)',
     },
     {
       category: 'Load Balancing',
-      value: process.env.REACT_APP_INFRA_LOAD_BALANCER || 'Traefik',
+      value: config.INFRA_LOAD_BALANCER,
       icon: FiShare2,
       bgColor: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
     },
     {
       category: 'GitOps',
-      value: process.env.REACT_APP_INFRA_GITOPS || 'Flux CD',
+      value: config.INFRA_GITOPS,
       icon: FiGitBranch,
       bgColor: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
     },
   ];
 
-  const githubUrl = process.env.REACT_APP_GITHUB_URL || '';
-  const linkedinUrl = process.env.REACT_APP_LINKEDIN_URL || '';
+  const githubUrl = config.GITHUB_URL;
+  const linkedinUrl = config.LINKEDIN_URL;
 
   return (
     <div className="stack-section">
