@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.0.2...v1.1.0) (2025-12-06)
+
+
+### Features
+
+* dynamic vars ([7611385](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/7611385f85bfce1614502b2edd28bf2dc9cec0f8))
+
 ## [1.0.2](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.0.1...v1.0.2) (2025-12-06)
 
 
