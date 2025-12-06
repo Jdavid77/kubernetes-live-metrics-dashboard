@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.0.0...v1.0.1) (2025-12-06)
+
+
+### Bug Fixes
+
+* permissions ([b5c8bb8](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/b5c8bb87c691dcc26caa204654cf12117644c673))
+
 # 1.0.0 (2025-12-06)
 
 
