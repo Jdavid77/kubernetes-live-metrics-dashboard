@@ -11,7 +11,12 @@ const useWebSocket = (url) => {
 
   const connect = useCallback(() => {
     try {
-      const ws = new WebSocket(`${WS_BASE_URL}${url}`);
+      // Build WebSocket URL from current location
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}${url}`;
+
+      console.log('Connecting to WebSocket:', wsUrl);
+      const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
         console.log('WebSocket connected');

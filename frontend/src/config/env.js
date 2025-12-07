@@ -5,12 +5,12 @@
  */
 const getEnv = (key, defaultValue = '') => {
   // Runtime config (Docker container)
-  if (window._env_ && window._env_[key] !== undefined) {
+  if (window._env_ && window._env_[key] !== undefined && window._env_[key] !== '') {
     return window._env_[key];
   }
 
   // Build-time config (development)
-  if (process.env[key] !== undefined) {
+  if (process.env[key] !== undefined && process.env[key] !== '') {
     return process.env[key];
   }
 
@@ -18,8 +18,8 @@ const getEnv = (key, defaultValue = '') => {
 };
 
 export const config = {
-  API_URL: getEnv('REACT_APP_API_URL', 'http://localhost:8080'),
-  WS_URL: getEnv('REACT_APP_WS_URL', 'ws://localhost:8080'),
+  API_URL: '/api',
+  WS_URL: '/ws',
   REFRESH_INTERVAL: parseInt(getEnv('REACT_APP_REFRESH_INTERVAL', '5000'), 10),
   VERSION: getEnv('REACT_APP_VERSION', '1.0.0'),
   LOGO_URL: getEnv('REACT_APP_LOGO_URL', ''),
