@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.1...v1.1.2) (2025-12-07)
+
+
+### Bug Fixes
+
+* upstream ([29723a1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/29723a1cb8017228164ac15907e76bf249ef14b1))
+
 ## [1.1.1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.0...v1.1.1) (2025-12-07)
 
 
