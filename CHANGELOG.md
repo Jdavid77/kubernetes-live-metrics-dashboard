@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.0...v1.1.1) (2025-12-07)
+
+
+### Bug Fixes
+
+* connection to backend ([701db11](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/701db11f7b0ea68a8259106358f19864e3fa5f9f))
+* update package json version ([455d270](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/455d27011ffc460c46e726a5a767ca8877b7465e))
+
 # [1.1.0](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.0.2...v1.1.0) (2025-12-06)
 
 
