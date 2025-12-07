@@ -1,12 +1,15 @@
-# Base
-FROM node:22-alpine AS base
+# Serve with nginx (unprivileged)
+FROM nginxinc/nginx-unprivileged:stable-alpine as unprivileged
 
+# Update Alpine packages to fix security vulnerabilities
+USER root
 RUN apk update && \
-    apk upgrade && \
+    apk upgrade --no-cache && \
     rm -rf /var/cache/apk/*
+USER nginx
 
 # Build
-FROM base AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -14,14 +17,11 @@ COPY package.json ./
 RUN npm install
 COPY . .
 
-# Extract version from package.json and save to file for runtime
 RUN node -p "require('./package.json').version" > /tmp/version.txt
-
-# Read version from package.json and set as env var for build
 RUN REACT_APP_VERSION=$(cat /tmp/version.txt) npm run build
 
-# Serve with nginx (unprivileged)
-FROM nginxinc/nginx-unprivileged:stable-alpine as nginx
+
+FROM unprivileged
 
 # Use the existing nginx user (uid/gid 101) by name
 COPY --chown=nginx:nginx --from=builder /app/build /usr/share/nginx/html
