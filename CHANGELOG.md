@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.3...v1.1.4) (2025-12-07)
+
+
+### Bug Fixes
+
+* security patches (trivy) ([f2df9d1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/f2df9d16a7fa70995916c9aaafc1838380f85255))
+
 ## [1.1.3](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.2...v1.1.3) (2025-12-07)
 
 
