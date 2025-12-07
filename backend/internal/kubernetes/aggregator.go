@@ -522,9 +522,18 @@ func (a *Aggregator) GetNodes(ctx context.Context) ([]models.Node, error) {
 			}
 		}
 
+		// Determine node role
+		role := "worker"
+		if _, hasControlPlane := node.Labels["node-role.kubernetes.io/control-plane"]; hasControlPlane {
+			role = "control-plane"
+		} else if _, hasMaster := node.Labels["node-role.kubernetes.io/master"]; hasMaster {
+			role = "control-plane"
+		}
+
 		result = append(result, models.Node{
 			Name:           node.Name,
 			Status:         status,
+			Role:           role,
 			CPUUsage:       cpuUsage,
 			MemoryUsage:    memUsage,
 			CPUCapacity:    cpuCapacity.String(),

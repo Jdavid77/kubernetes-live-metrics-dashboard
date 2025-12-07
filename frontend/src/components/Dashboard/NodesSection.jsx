@@ -77,7 +77,12 @@ const NodesSection = () => {
                         <div className="node-icon">
                           <FiServer size={20} />
                         </div>
-                        <div className="node-name">{node.name}</div>
+                        <div className="node-name">
+                          {node.name}
+                          <span className={`node-role-badge ${node.role === 'control-plane' ? 'control-plane' : 'worker'}`}>
+                            {node.role === 'control-plane' ? 'Control Plane' : 'Worker'}
+                          </span>
+                        </div>
                       </div>
                       <div className={`node-status-badge ${isReady ? 'ready' : 'not-ready'}`}>
                         {isReady ? (

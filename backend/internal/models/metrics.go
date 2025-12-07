@@ -24,6 +24,7 @@ type NodeMetrics struct {
 type Node struct {
 	Name           string  `json:"name"`
 	Status         string  `json:"status"` // "Ready" or "NotReady"
+	Role           string  `json:"role"`   // "control-plane" or "worker"
 	CPUUsage       float64 `json:"cpu_usage"`
 	MemoryUsage    float64 `json:"memory_usage"`
 	CPUCapacity    string  `json:"cpu_capacity"`
