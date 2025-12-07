@@ -9,6 +9,12 @@ module.exports = {
         changelogFile: 'CHANGELOG.md',
       },
     ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'npm version ${nextRelease.version} --no-git-tag-version --prefix frontend',
+      },
+    ],
     '@semantic-release/github',
     [
       '@semantic-release/git',
