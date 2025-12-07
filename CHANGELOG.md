@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.2...v1.1.3) (2025-12-07)
+
+
+### Bug Fixes
+
+* add labels to nodes + show correct version in header ([e5c6232](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/e5c6232366b6af6a2c41a512993edfc0c3e0ab3d))
+
 ## [1.1.2](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.1...v1.1.2) (2025-12-07)
 
 
