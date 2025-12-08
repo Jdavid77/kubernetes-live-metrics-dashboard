@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.4...v1.1.5) (2025-12-08)
+
+
+### Bug Fixes
+
+* stack css ( mobile compatible ) ([8a11d77](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/8a11d77c3f67cbd75ae5c858ea42eeb74b5cb9b1))
+
 ## [1.1.4](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.3...v1.1.4) (2025-12-07)
 
 
