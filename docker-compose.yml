@@ -25,6 +25,7 @@ services:
     ports:
       - "3000:8080"
     environment:
+      - NGINX_BACKEND_URL=backend:8000
       - REACT_APP_REFRESH_INTERVAL=5000
       - REACT_APP_GITHUB_URL=https://github.com/Jdavid77/home-cluster
       - REACT_APP_LINKEDIN_URL=https://www.linkedin.com/in/joaodavid77

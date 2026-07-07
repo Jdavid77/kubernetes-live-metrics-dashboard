@@ -25,5 +25,10 @@ EOF
 echo "Runtime environment configuration generated:"
 cat /usr/share/nginx/html/env-config.js
 
+# Substitute NGINX_BACKEND_URL in nginx.conf (defaults to localhost:8000 for k8s sidecar)
+NGINX_BACKEND_URL="${NGINX_BACKEND_URL:-localhost:8000}" \
+  envsubst '${NGINX_BACKEND_URL}' < /etc/nginx/nginx.conf > /tmp/nginx.conf
+cp /tmp/nginx.conf /etc/nginx/nginx.conf
+
 # Start nginx
 exec nginx -g "daemon off;"
