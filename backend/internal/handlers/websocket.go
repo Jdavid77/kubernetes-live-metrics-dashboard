@@ -18,76 +18,41 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-// WebSocketHandler handles WebSocket connections for real-time metrics
-type WebSocketHandler struct {
-	aggregator      *kubernetes.Aggregator
-	refreshInterval time.Duration
-	clients         map[*websocket.Conn]bool
-	broadcast       chan []byte
-	register        chan *websocket.Conn
-	unregister      chan *websocket.Conn
-	mu              sync.Mutex
+// Hub manages active WebSocket connections and broadcasts messages to them.
+type Hub struct {
+	clients    map[*websocket.Conn]bool
+	broadcast  chan []byte
+	register   chan *websocket.Conn
+	unregister chan *websocket.Conn
+	mu         sync.Mutex
 }
 
-// NewWebSocketHandler creates a new WebSocket handler
-func NewWebSocketHandler(aggregator *kubernetes.Aggregator, refreshInterval time.Duration) *WebSocketHandler {
-	handler := &WebSocketHandler{
-		aggregator:      aggregator,
-		refreshInterval: refreshInterval,
-		clients:         make(map[*websocket.Conn]bool),
-		broadcast:       make(chan []byte),
-		register:        make(chan *websocket.Conn),
-		unregister:      make(chan *websocket.Conn),
-	}
-
-	// Start the broadcast loop
-	go handler.handleConnections()
-	go handler.broadcastMetrics()
-
-	return handler
-}
-
-// ServeHTTP handles WebSocket upgrade requests
-func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Upgrade HTTP connection to WebSocket
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Printf("Error upgrading to WebSocket: %v", err)
-		return
-	}
-
-	// Register new client
-	h.register <- conn
-
-	// Keep connection alive and handle disconnection
-	go h.handleClient(conn)
-}
-
-// handleClient handles individual client connections
-func (h *WebSocketHandler) handleClient(conn *websocket.Conn) {
-	defer func() {
-		h.unregister <- conn
-		conn.Close()
-	}()
-
-	// Read messages from client (for keep-alive)
-	for {
-		_, _, err := conn.ReadMessage()
-		if err != nil {
-			break
-		}
+func newHub() *Hub {
+	return &Hub{
+		clients:    make(map[*websocket.Conn]bool),
+		broadcast:  make(chan []byte, 256),
+		register:   make(chan *websocket.Conn),
+		unregister: make(chan *websocket.Conn),
 	}
 }
 
-// handleConnections manages client registrations and broadcasts
-func (h *WebSocketHandler) handleConnections() {
+// run processes registrations and broadcasts until ctx is cancelled.
+func (h *Hub) run(ctx context.Context) {
 	for {
 		select {
+		case <-ctx.Done():
+			h.mu.Lock()
+			for conn := range h.clients {
+				conn.Close()
+			}
+			h.mu.Unlock()
+			return
+
 		case conn := <-h.register:
 			h.mu.Lock()
 			h.clients[conn] = true
 			h.mu.Unlock()
-			log.Printf("New WebSocket client connected. Total clients: %d", len(h.clients))
+			log.Printf("WebSocket client connected. Total: %d", len(h.clients))
 
 		case conn := <-h.unregister:
 			h.mu.Lock()
@@ -96,14 +61,13 @@ func (h *WebSocketHandler) handleConnections() {
 				conn.Close()
 			}
 			h.mu.Unlock()
-			log.Printf("WebSocket client disconnected. Total clients: %d", len(h.clients))
+			log.Printf("WebSocket client disconnected. Total: %d", len(h.clients))
 
 		case message := <-h.broadcast:
 			h.mu.Lock()
 			for conn := range h.clients {
-				err := conn.WriteMessage(websocket.TextMessage, message)
-				if err != nil {
-					log.Printf("Error broadcasting to client: %v", err)
+				if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
+					log.Printf("WebSocket write error: %v", err)
 					conn.Close()
 					delete(h.clients, conn)
 				}
@@ -113,43 +77,80 @@ func (h *WebSocketHandler) handleConnections() {
 	}
 }
 
-// broadcastMetrics periodically fetches and broadcasts metrics
-func (h *WebSocketHandler) broadcastMetrics() {
-	ticker := time.NewTicker(h.refreshInterval)
+// broadcastMetrics fetches metrics on each tick and sends to the hub.
+func broadcastMetrics(ctx context.Context, hub *Hub, src kubernetes.MetricsSource, interval time.Duration) {
+	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	for range ticker.C {
-		h.mu.Lock()
-		clientCount := len(h.clients)
-		h.mu.Unlock()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			hub.mu.Lock()
+			clientCount := len(hub.clients)
+			hub.mu.Unlock()
+			if clientCount == 0 {
+				continue
+			}
 
-		// Only fetch metrics if there are connected clients
-		if clientCount == 0 {
-			continue
+			fetchCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+			metrics, err := src.GetClusterMetrics(fetchCtx)
+			cancel()
+			if err != nil {
+				log.Printf("Error fetching metrics for broadcast: %v", err)
+				continue
+			}
+
+			msg, err := json.Marshal(map[string]any{
+				"type": "metrics_update",
+				"data": metrics,
+			})
+			if err != nil {
+				log.Printf("Error marshaling metrics: %v", err)
+				continue
+			}
+
+			select {
+			case hub.broadcast <- msg:
+			default:
+				// drop if the hub's buffer is full (slow consumer)
+			}
 		}
-
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		metrics, err := h.aggregator.GetClusterMetrics(ctx)
-		cancel()
-
-		if err != nil {
-			log.Printf("Error fetching metrics for broadcast: %v", err)
-			continue
-		}
-
-		// Create message
-		message := map[string]interface{}{
-			"type": "metrics_update",
-			"data": metrics,
-		}
-
-		messageBytes, err := json.Marshal(message)
-		if err != nil {
-			log.Printf("Error marshaling metrics: %v", err)
-			continue
-		}
-
-		// Broadcast to all clients
-		h.broadcast <- messageBytes
 	}
+}
+
+// WebSocketHandler upgrades HTTP connections and hands them to the hub.
+type WebSocketHandler struct {
+	hub *Hub
+}
+
+// NewWebSocketHandler creates a handler and starts the hub and ticker goroutines.
+// Both goroutines stop when ctx is cancelled.
+func NewWebSocketHandler(ctx context.Context, aggregator kubernetes.MetricsSource, refreshInterval time.Duration) *WebSocketHandler {
+	hub := newHub()
+	go hub.run(ctx)
+	go broadcastMetrics(ctx, hub, aggregator, refreshInterval)
+	return &WebSocketHandler{hub: hub}
+}
+
+// ServeHTTP upgrades the connection and keeps it alive until the client disconnects.
+func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("WebSocket upgrade error: %v", err)
+		return
+	}
+
+	h.hub.register <- conn
+
+	// Drain incoming frames; unregister on disconnect.
+	go func() {
+		defer func() { h.hub.unregister <- conn }()
+		for {
+			if _, _, err := conn.ReadMessage(); err != nil {
+				break
+			}
+		}
+	}()
 }

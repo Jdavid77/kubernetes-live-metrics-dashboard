@@ -10,11 +10,11 @@ import (
 
 // NodesHandler handles node-related HTTP requests
 type NodesHandler struct {
-	aggregator *kubernetes.Aggregator
+	aggregator kubernetes.MetricsSource
 }
 
 // NewNodesHandler creates a new nodes handler
-func NewNodesHandler(aggregator *kubernetes.Aggregator) *NodesHandler {
+func NewNodesHandler(aggregator kubernetes.MetricsSource) *NodesHandler {
 	return &NodesHandler{aggregator: aggregator}
 }
 

@@ -100,7 +100,6 @@ npm start
 | `KUBECONFIG` | `""` | Path to kubeconfig (auto-detected if empty) |
 | `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
 | `METRICS_REFRESH_INTERVAL` | `5s` | Metrics refresh interval |
-| `LOG_LEVEL` | `info` | Logging level |
 
 ### Frontend Environment Variables
 

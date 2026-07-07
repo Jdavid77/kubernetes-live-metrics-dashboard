@@ -10,11 +10,11 @@ import (
 
 // ServicesHandler handles services requests
 type ServicesHandler struct {
-	aggregator *kubernetes.Aggregator
+	aggregator kubernetes.MetricsSource
 }
 
 // NewServicesHandler creates a new services handler
-func NewServicesHandler(aggregator *kubernetes.Aggregator) *ServicesHandler {
+func NewServicesHandler(aggregator kubernetes.MetricsSource) *ServicesHandler {
 	return &ServicesHandler{
 		aggregator: aggregator,
 	}

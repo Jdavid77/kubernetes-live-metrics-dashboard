@@ -13,13 +13,6 @@ type ClusterMetrics struct {
 	Timestamp      time.Time `json:"timestamp"`
 }
 
-// NodeMetrics represents metrics for a single node
-type NodeMetrics struct {
-	Name        string `json:"name"`
-	CPUUsage    string `json:"cpu_usage"`
-	MemoryUsage string `json:"memory_usage"`
-}
-
 // Node represents detailed node information with metrics
 type Node struct {
 	Name           string  `json:"name"`
@@ -32,10 +25,3 @@ type Node struct {
 	PodCount       int     `json:"pod_count"`
 }
 
-// PodMetrics represents metrics for a single pod
-type PodMetrics struct {
-	Name        string `json:"name"`
-	Namespace   string `json:"namespace"`
-	CPUUsage    string `json:"cpu_usage"`
-	MemoryUsage string `json:"memory_usage"`
-}

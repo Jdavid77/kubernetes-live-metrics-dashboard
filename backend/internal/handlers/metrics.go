@@ -10,11 +10,11 @@ import (
 
 // MetricsHandler handles metrics requests
 type MetricsHandler struct {
-	aggregator *kubernetes.Aggregator
+	aggregator kubernetes.MetricsSource
 }
 
 // NewMetricsHandler creates a new metrics handler
-func NewMetricsHandler(aggregator *kubernetes.Aggregator) *MetricsHandler {
+func NewMetricsHandler(aggregator kubernetes.MetricsSource) *MetricsHandler {
 	return &MetricsHandler{
 		aggregator: aggregator,
 	}

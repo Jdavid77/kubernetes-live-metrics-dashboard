@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -23,6 +24,9 @@ type Aggregator struct {
 type metricsCache struct {
 	metrics   *models.ClusterMetrics
 	apps      []models.Application
+	pods      []models.Pod
+	services  []models.Service
+	nodes     []models.Node
 	timestamp time.Time
 }
 
@@ -232,26 +236,25 @@ func extractTechnology(dep *appsv1.Deployment) []string {
 func inferTechnologyFromImage(image string) []string {
 	tech := []string{}
 
-	// Simple pattern matching
-	if contains(image, "node") || contains(image, "nodejs") {
+	if strings.Contains(image, "node") || strings.Contains(image, "nodejs") {
 		tech = append(tech, "Node.js")
 	}
-	if contains(image, "python") {
+	if strings.Contains(image, "python") {
 		tech = append(tech, "Python")
 	}
-	if contains(image, "golang") || contains(image, "go:") {
+	if strings.Contains(image, "golang") || strings.Contains(image, "go:") {
 		tech = append(tech, "Go")
 	}
-	if contains(image, "nginx") {
+	if strings.Contains(image, "nginx") {
 		tech = append(tech, "nginx")
 	}
-	if contains(image, "postgres") {
+	if strings.Contains(image, "postgres") {
 		tech = append(tech, "PostgreSQL")
 	}
-	if contains(image, "redis") {
+	if strings.Contains(image, "redis") {
 		tech = append(tech, "Redis")
 	}
-	if contains(image, "mongo") {
+	if strings.Contains(image, "mongo") {
 		tech = append(tech, "MongoDB")
 	}
 
@@ -363,6 +366,14 @@ func podToInfo(pod *corev1.Pod) models.PodInfo {
 
 // GetPods retrieves all pods across all namespaces
 func (a *Aggregator) GetPods(ctx context.Context) ([]models.Pod, error) {
+	a.mu.RLock()
+	if a.cache.pods != nil && time.Since(a.cache.timestamp) < a.cacheTTL {
+		pods := a.cache.pods
+		a.mu.RUnlock()
+		return pods, nil
+	}
+	a.mu.RUnlock()
+
 	pods, err := a.client.GetPods(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get pods: %w", err)
@@ -370,7 +381,6 @@ func (a *Aggregator) GetPods(ctx context.Context) ([]models.Pod, error) {
 
 	result := make([]models.Pod, 0, len(pods.Items))
 	for _, pod := range pods.Items {
-		// Count ready containers
 		readyContainers := 0
 		totalContainers := len(pod.Status.ContainerStatuses)
 		for _, cs := range pod.Status.ContainerStatuses {
@@ -379,13 +389,11 @@ func (a *Aggregator) GetPods(ctx context.Context) ([]models.Pod, error) {
 			}
 		}
 
-		// Count restarts
 		var restarts int32
 		for _, cs := range pod.Status.ContainerStatuses {
 			restarts += cs.RestartCount
 		}
 
-		// Calculate age
 		age := time.Since(pod.CreationTimestamp.Time).Round(time.Second).String()
 
 		result = append(result, models.Pod{
@@ -401,11 +409,23 @@ func (a *Aggregator) GetPods(ctx context.Context) ([]models.Pod, error) {
 		})
 	}
 
+	a.mu.Lock()
+	a.cache.pods = result
+	a.mu.Unlock()
+
 	return result, nil
 }
 
 // GetServices retrieves all services
 func (a *Aggregator) GetServices(ctx context.Context) ([]models.Service, error) {
+	a.mu.RLock()
+	if a.cache.services != nil && time.Since(a.cache.timestamp) < a.cacheTTL {
+		services := a.cache.services
+		a.mu.RUnlock()
+		return services, nil
+	}
+	a.mu.RUnlock()
+
 	services, err := a.client.GetServices(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get services: %w", err)
@@ -447,11 +467,23 @@ func (a *Aggregator) GetServices(ctx context.Context) ([]models.Service, error) 
 		})
 	}
 
+	a.mu.Lock()
+	a.cache.services = result
+	a.mu.Unlock()
+
 	return result, nil
 }
 
 // GetNodes retrieves all nodes with their metrics and status
 func (a *Aggregator) GetNodes(ctx context.Context) ([]models.Node, error) {
+	a.mu.RLock()
+	if a.cache.nodes != nil && time.Since(a.cache.timestamp) < a.cacheTTL {
+		nodes := a.cache.nodes
+		a.mu.RUnlock()
+		return nodes, nil
+	}
+	a.mu.RUnlock()
+
 	// Get nodes
 	nodeList, err := a.client.GetNodes(ctx)
 	if err != nil {
@@ -542,7 +574,16 @@ func (a *Aggregator) GetNodes(ctx context.Context) ([]models.Node, error) {
 		})
 	}
 
+	a.mu.Lock()
+	a.cache.nodes = result
+	a.mu.Unlock()
+
 	return result, nil
+}
+
+// GetNamespaces retrieves all namespace names in the cluster.
+func (a *Aggregator) GetNamespaces(ctx context.Context) ([]string, error) {
+	return a.client.GetNamespaces(ctx)
 }
 
 // formatMemory formats a memory quantity to a readable string
@@ -556,11 +597,3 @@ func formatMemory(q resource.Quantity) string {
 	return fmt.Sprintf("%dKi", bytes/1024)
 }
 
-// contains checks if a string contains a substring (case-insensitive)
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) &&
-		(s == substr ||
-		 (len(s) > len(substr) &&
-		  (s[:len(substr)] == substr ||
-		   s[len(s)-len(substr):] == substr)))
-}

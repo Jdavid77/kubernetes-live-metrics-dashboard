@@ -10,11 +10,11 @@ import (
 
 // PodsHandler handles pod-related HTTP requests
 type PodsHandler struct {
-	aggregator *kubernetes.Aggregator
+	aggregator kubernetes.MetricsSource
 }
 
 // NewPodsHandler creates a new pods handler
-func NewPodsHandler(aggregator *kubernetes.Aggregator) *PodsHandler {
+func NewPodsHandler(aggregator kubernetes.MetricsSource) *PodsHandler {
 	return &PodsHandler{aggregator: aggregator}
 }
 

@@ -7,24 +7,20 @@ import (
 
 // Config holds all application configuration
 type Config struct {
-	Port                  string
-	KubeConfig            string
-	CORSOrigin            string
+	Port                   string
+	KubeConfig             string
+	CORSOrigin             string
 	MetricsRefreshInterval time.Duration
-	LogLevel              string
 }
 
 // Load loads configuration from environment variables
 func Load() *Config {
-	cfg := &Config{
-		Port:                  getEnv("PORT", "8080"),
-		KubeConfig:            getEnv("KUBECONFIG", ""),
-		CORSOrigin:            getEnv("CORS_ORIGIN", "http://localhost:3000"),
+	return &Config{
+		Port:                   getEnv("PORT", "8080"),
+		KubeConfig:             getEnv("KUBECONFIG", ""),
+		CORSOrigin:             getEnv("CORS_ORIGIN", "http://localhost:3000"),
 		MetricsRefreshInterval: parseDuration(getEnv("METRICS_REFRESH_INTERVAL", "5s")),
-		LogLevel:              getEnv("LOG_LEVEL", "info"),
 	}
-
-	return cfg
 }
 
 // getEnv gets an environment variable or returns a default value

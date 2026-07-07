@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
+	"os/signal"
+	"syscall"
 
 	"github.com/Jdavid77/kubernetes-dashboard/internal/config"
 	"github.com/Jdavid77/kubernetes-dashboard/internal/handlers"
@@ -11,6 +14,9 @@ import (
 
 func main() {
 	log.Println("Starting Kubernetes Dashboard API...")
+
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
 	// Load configuration
 	cfg := config.Load()
@@ -31,9 +37,9 @@ func main() {
 	appsHandler := handlers.NewApplicationsHandler(aggregator)
 	podsHandler := handlers.NewPodsHandler(aggregator)
 	servicesHandler := handlers.NewServicesHandler(aggregator)
-	namespacesHandler := handlers.NewNamespacesHandler(k8sClient)
+	namespacesHandler := handlers.NewNamespacesHandler(aggregator)
 	nodesHandler := handlers.NewNodesHandler(aggregator)
-	wsHandler := handlers.NewWebSocketHandler(aggregator, cfg.MetricsRefreshInterval)
+	wsHandler := handlers.NewWebSocketHandler(ctx, aggregator, cfg.MetricsRefreshInterval)
 
 	// Setup router
 	router := server.SetupRouter(

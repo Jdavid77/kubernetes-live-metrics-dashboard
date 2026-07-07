@@ -17,15 +17,6 @@ func (c *Client) GetDeployments(ctx context.Context) (*appsv1.DeploymentList, er
 	return deployments, nil
 }
 
-// GetDeploymentsByNamespace retrieves deployments in a specific namespace
-func (c *Client) GetDeploymentsByNamespace(ctx context.Context, namespace string) (*appsv1.DeploymentList, error) {
-	deployments, err := c.Clientset.AppsV1().Deployments(namespace).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, fmt.Errorf("failed to list deployments in namespace %s: %w", namespace, err)
-	}
-	return deployments, nil
-}
-
 // GetDeployment retrieves a specific deployment
 func (c *Client) GetDeployment(ctx context.Context, namespace, name string) (*appsv1.Deployment, error) {
 	deployment, err := c.Clientset.AppsV1().Deployments(namespace).Get(ctx, name, metav1.GetOptions{})

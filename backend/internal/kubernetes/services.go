@@ -17,11 +17,3 @@ func (c *Client) GetServices(ctx context.Context) (*corev1.ServiceList, error) {
 	return services, nil
 }
 
-// GetServicesByNamespace retrieves services in a specific namespace
-func (c *Client) GetServicesByNamespace(ctx context.Context, namespace string) (*corev1.ServiceList, error) {
-	services, err := c.Clientset.CoreV1().Services(namespace).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, fmt.Errorf("failed to list services in namespace %s: %w", namespace, err)
-	}
-	return services, nil
-}

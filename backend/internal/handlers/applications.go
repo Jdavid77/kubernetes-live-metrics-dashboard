@@ -11,11 +11,11 @@ import (
 
 // ApplicationsHandler handles application requests
 type ApplicationsHandler struct {
-	aggregator *kubernetes.Aggregator
+	aggregator kubernetes.MetricsSource
 }
 
 // NewApplicationsHandler creates a new applications handler
-func NewApplicationsHandler(aggregator *kubernetes.Aggregator) *ApplicationsHandler {
+func NewApplicationsHandler(aggregator kubernetes.MetricsSource) *ApplicationsHandler {
 	return &ApplicationsHandler{
 		aggregator: aggregator,
 	}
