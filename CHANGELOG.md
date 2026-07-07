@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.5...v1.2.0) (2026-07-07)
+
+
+### Bug Fixes
+
+* **nginx:** proxy to backend service name instead of localhost ([0edd3e7](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/0edd3e7aa73a6032246034cd428d13a55645ff7a))
+
+
+### Features
+
+* **backend:** introduce MetricsSource interface and deepen architecture ([e7b2d41](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/e7b2d41ec3c98b1b5fc93e1a2669eff73e86b31f))
+
 ## [1.1.5](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.4...v1.1.5) (2025-12-08)
 
 
