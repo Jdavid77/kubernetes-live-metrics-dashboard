@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.2.0...v1.2.1) (2026-07-07)
+
+
+### Bug Fixes
+
+* **nginx:** make backend upstream configurable via NGINX_BACKEND_URL ([1ad2506](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/commit/1ad2506d612b953c0472f8a793d9ea72230e8186))
+
 # [1.2.0](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.1.5...v1.2.0) (2026-07-07)
 
 
