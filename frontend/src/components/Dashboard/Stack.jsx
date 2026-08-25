@@ -1,5 +1,13 @@
 import React from 'react';
-import { FiServer, FiHardDrive, FiWifi, FiShare2, FiGitBranch, FiGithub, FiLinkedin } from 'react-icons/fi';
+import {
+  FiServer,
+  FiHardDrive,
+  FiWifi,
+  FiShare2,
+  FiGitBranch,
+  FiGithub,
+  FiLinkedin,
+} from 'react-icons/fi';
 import config from '../../config/env';
 import './Stack.css';
 
@@ -45,8 +53,8 @@ const Stack = () => {
       <h1 className="main-title">Home Cluster Live Status</h1>
       <p className="main-description">
         This cluster is built on Talos OS, with initial configurations generated using Talhelper.
-        Following deployment, Flux continuously monitors a git repository for changes, while Renovate
-        handles automated dependency updates.
+        Following deployment, Flux continuously monitors a git repository for changes, while
+        Renovate handles automated dependency updates.
       </p>
       <div className="social-links">
         {githubUrl && (

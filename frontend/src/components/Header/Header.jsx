@@ -5,8 +5,6 @@ import './Header.css';
 
 const Header = ({ isConnected }) => {
   const logoUrl = config.LOGO_URL;
-  const version = config.VERSION;
-
   return (
     <header className="header">
       <div className="header-top">
@@ -21,7 +19,6 @@ const Header = ({ isConnected }) => {
             </div>
             <div>
               <h1>Kubernetes Dashboard</h1>
-              <span className="version">v{version}</span>
             </div>
           </div>
 

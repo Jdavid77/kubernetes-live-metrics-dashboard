@@ -50,8 +50,16 @@ const NodesSection = () => {
       <div className="nodes-header" onClick={toggleExpanded}>
         <h2 className="nodes-header-title">Cluster Nodes</h2>
         <div className="nodes-header-right">
-          {!loading && <span className="nodes-count">{nodes.length} node{nodes.length !== 1 ? 's' : ''}</span>}
-          {isExpanded ? <FiChevronUp className="chevron-icon" size={24} /> : <FiChevronDown className="chevron-icon" size={24} />}
+          {!loading && (
+            <span className="nodes-count">
+              {nodes.length} node{nodes.length !== 1 ? 's' : ''}
+            </span>
+          )}
+          {isExpanded ? (
+            <FiChevronUp className="chevron-icon" size={24} />
+          ) : (
+            <FiChevronDown className="chevron-icon" size={24} />
+          )}
         </div>
       </div>
 
@@ -79,7 +87,9 @@ const NodesSection = () => {
                         </div>
                         <div className="node-name">
                           {node.name}
-                          <span className={`node-role-badge ${node.role === 'control-plane' ? 'control-plane' : 'worker'}`}>
+                          <span
+                            className={`node-role-badge ${node.role === 'control-plane' ? 'control-plane' : 'worker'}`}
+                          >
                             {node.role === 'control-plane' ? 'Control Plane' : 'Worker'}
                           </span>
                         </div>
@@ -109,7 +119,7 @@ const NodesSection = () => {
                           className="progress-bar-fill"
                           style={{
                             width: `${Math.min(node.cpu_usage, 100)}%`,
-                            backgroundColor: cpuColor
+                            backgroundColor: cpuColor,
                           }}
                         />
                       </div>
@@ -123,7 +133,7 @@ const NodesSection = () => {
                           className="progress-bar-fill"
                           style={{
                             width: `${Math.min(node.memory_usage, 100)}%`,
-                            backgroundColor: memColor
+                            backgroundColor: memColor,
                           }}
                         />
                       </div>

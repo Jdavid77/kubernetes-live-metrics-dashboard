@@ -43,7 +43,7 @@ func (h *Hub) run(ctx context.Context) {
 		case <-ctx.Done():
 			h.mu.Lock()
 			for conn := range h.clients {
-				conn.Close()
+				_ = conn.Close()
 			}
 			h.mu.Unlock()
 			return
@@ -58,7 +58,7 @@ func (h *Hub) run(ctx context.Context) {
 			h.mu.Lock()
 			if _, ok := h.clients[conn]; ok {
 				delete(h.clients, conn)
-				conn.Close()
+				_ = conn.Close()
 			}
 			h.mu.Unlock()
 			log.Printf("WebSocket client disconnected. Total: %d", len(h.clients))
@@ -68,7 +68,7 @@ func (h *Hub) run(ctx context.Context) {
 			for conn := range h.clients {
 				if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
 					log.Printf("WebSocket write error: %v", err)
-					conn.Close()
+					_ = conn.Close()
 					delete(h.clients, conn)
 				}
 			}

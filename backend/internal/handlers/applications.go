@@ -45,13 +45,17 @@ func (h *ApplicationsHandler) ListApplications(w http.ResponseWriter, r *http.Re
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(filtered)
+		if err := json.NewEncoder(w).Encode(filtered); err != nil {
+			log.Printf("Error encoding filtered applications: %v", err)
+		}
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(apps)
+	if err := json.NewEncoder(w).Encode(apps); err != nil {
+		log.Printf("Error encoding applications: %v", err)
+	}
 }
 
 // GetApplicationDetail handles getting detailed information about an application
@@ -81,5 +85,7 @@ func (h *ApplicationsHandler) GetApplicationDetail(w http.ResponseWriter, r *htt
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(detail)
+	if err := json.NewEncoder(w).Encode(detail); err != nil {
+		log.Printf("Error encoding application detail: %v", err)
+	}
 }

@@ -1,5 +1,8 @@
 # Kubernetes Dashboard
 
+> [!CAUTION]
+> Vibe coded project, run at your own risk.
+
 A modern, real-time Kubernetes cluster monitoring dashboard built with Go and React.
 
 ## Features

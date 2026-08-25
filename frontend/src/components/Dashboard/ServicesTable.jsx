@@ -39,9 +39,7 @@ const ServicesTable = ({ namespace }) => {
     <div className="resource-table-container">
       <div className="table-header">
         <h2 className="section-title">Services</h2>
-        <div className="table-stats">
-          Total: {services.length} services
-        </div>
+        <div className="table-stats">Total: {services.length} services</div>
       </div>
 
       <div className="table-wrapper">
@@ -82,9 +80,7 @@ const ServicesTable = ({ namespace }) => {
                     <span className="text-muted">-</span>
                   )}
                 </td>
-                <td className="age-cell">
-                  {formatRelativeTime(service.created_at)}
-                </td>
+                <td className="age-cell">{formatRelativeTime(service.created_at)}</td>
               </tr>
             ))}
           </tbody>

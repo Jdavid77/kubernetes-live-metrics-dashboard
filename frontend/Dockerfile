@@ -17,15 +17,13 @@ COPY package.json ./
 RUN npm install
 COPY . .
 
-RUN node -p "require('./package.json').version" > /tmp/version.txt
-RUN REACT_APP_VERSION=$(cat /tmp/version.txt) npm run build
+RUN npm run build
 
 
 FROM unprivileged
 
 # Use the existing nginx user (uid/gid 101) by name
 COPY --chown=nginx:nginx --from=builder /app/build /usr/share/nginx/html
-COPY --chown=nginx:nginx --from=builder /tmp/version.txt /version.txt
 COPY --chown=nginx:nginx nginx.conf /etc/nginx/nginx.conf
 COPY --chown=nginx:nginx entrypoint.sh /entrypoint.sh
 
