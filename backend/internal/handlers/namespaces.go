@@ -31,5 +31,7 @@ func (h *NamespacesHandler) ListNamespaces(w http.ResponseWriter, r *http.Reques
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(namespaces)
+	if err := json.NewEncoder(w).Encode(namespaces); err != nil {
+		log.Printf("Error encoding namespaces: %v", err)
+	}
 }

@@ -41,10 +41,14 @@ func (h *PodsHandler) ListPods(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(filtered)
+		if err := json.NewEncoder(w).Encode(filtered); err != nil {
+			log.Printf("Error encoding filtered pods: %v", err)
+		}
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(pods)
+	if err := json.NewEncoder(w).Encode(pods); err != nil {
+		log.Printf("Error encoding pods: %v", err)
+	}
 }

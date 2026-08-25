@@ -44,11 +44,15 @@ func (h *ServicesHandler) ListServices(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(filtered)
+		if err := json.NewEncoder(w).Encode(filtered); err != nil {
+			log.Printf("Error encoding filtered services: %v", err)
+		}
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(services)
+	if err := json.NewEncoder(w).Encode(services); err != nil {
+		log.Printf("Error encoding services: %v", err)
+	}
 }

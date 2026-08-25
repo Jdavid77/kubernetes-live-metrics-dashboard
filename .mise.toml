@@ -1,0 +1,5 @@
+[tools]
+golangci-lint = "2.13.1"
+"npm:prettier" = "3.9.6"
+"aqua:rhysd/actionlint" = "1.7.12"
+"pipx:semgrep" = "1.174.0"
