@@ -1,3 +1,5 @@
+## [1.2.9](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.2.8...v1.2.9) (2026-08-25)
+
 ## [1.2.8](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.2.7...v1.2.8) (2026-08-25)
 
 ## [1.2.7](https://github.com/Jdavid77/kubernetes-live-metrics-dashboard/compare/v1.2.6...v1.2.7) (2026-07-28)
