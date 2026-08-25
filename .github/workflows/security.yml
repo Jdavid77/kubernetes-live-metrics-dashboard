@@ -23,7 +23,7 @@ jobs:
       - name: Run Semgrep on changed files
         run: semgrep ci
         env:
-          SEMGREP_APP_TOKEN: '{{ secrets.SEMGREP_APP_TOKEN }}'
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
           
 
   gitleaks:
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # v0.31.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
