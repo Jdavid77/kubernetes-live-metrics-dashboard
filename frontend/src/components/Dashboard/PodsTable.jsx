@@ -39,9 +39,7 @@ const PodsTable = ({ namespace }) => {
     <div className="resource-table-container">
       <div className="table-header">
         <h2 className="section-title">Pods</h2>
-        <div className="table-stats">
-          Total: {pods.length} pods
-        </div>
+        <div className="table-stats">Total: {pods.length} pods</div>
       </div>
 
       <div className="table-wrapper">
@@ -71,9 +69,7 @@ const PodsTable = ({ namespace }) => {
                     <span className="namespace-badge">{pod.namespace}</span>
                   </td>
                   <td>
-                    <span className={`status-badge ${pod.status.toLowerCase()}`}>
-                      {pod.status}
-                    </span>
+                    <span className={`status-badge ${pod.status.toLowerCase()}`}>{pod.status}</span>
                   </td>
                   <td>
                     <div className="status-cell">

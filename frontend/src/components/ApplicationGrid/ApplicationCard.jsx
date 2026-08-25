@@ -21,10 +21,7 @@ const ApplicationCard = ({ application }) => {
     <div className="application-card">
       <div className="app-header">
         <h3 className="app-name">{application.name}</h3>
-        <div
-          className="app-status"
-          style={{ color: STATUS_COLORS[application.status] }}
-        >
+        <div className="app-status" style={{ color: STATUS_COLORS[application.status] }}>
           {getStatusIcon()}
           <span>{application.status}</span>
         </div>

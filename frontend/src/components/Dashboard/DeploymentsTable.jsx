@@ -26,9 +26,7 @@ const DeploymentsTable = ({ applications, loading }) => {
     <div className="resource-table-container">
       <div className="table-header">
         <h2 className="section-title">Deployments</h2>
-        <div className="table-stats">
-          Total: {applications?.length || 0} deployments
-        </div>
+        <div className="table-stats">Total: {applications?.length || 0} deployments</div>
       </div>
 
       <div className="table-wrapper">
@@ -53,17 +51,13 @@ const DeploymentsTable = ({ applications, loading }) => {
                 <td>
                   <div className="status-cell">
                     {getStatusIcon(app.status)}
-                    <span className={`status-badge ${app.status.toLowerCase()}`}>
-                      {app.status}
-                    </span>
+                    <span className={`status-badge ${app.status.toLowerCase()}`}>{app.status}</span>
                   </div>
                 </td>
                 <td>
                   <span className="pod-count">{app.pod_count}</span>
                 </td>
-                <td className="age-cell">
-                  {formatRelativeTime(app.created_at)}
-                </td>
+                <td className="age-cell">{formatRelativeTime(app.created_at)}</td>
                 <td className="image-cell">
                   <code>{app.image}</code>
                 </td>

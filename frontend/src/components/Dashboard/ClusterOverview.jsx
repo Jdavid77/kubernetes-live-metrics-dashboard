@@ -54,7 +54,10 @@ const ClusterOverview = ({ metrics }) => {
             const Icon = metric.icon;
             return (
               <div key={index} className="health-card" style={{ '--card-color': metric.color }}>
-                <div className="health-icon" style={{ backgroundColor: `${metric.color}20`, color: metric.color }}>
+                <div
+                  className="health-icon"
+                  style={{ backgroundColor: `${metric.color}20`, color: metric.color }}
+                >
                   <Icon size={28} />
                 </div>
                 <div className="health-content">
@@ -71,7 +74,10 @@ const ClusterOverview = ({ metrics }) => {
             const Icon = resource.icon;
             return (
               <div key={index} className="resource-item">
-                <div className="resource-icon-small" style={{ backgroundColor: `${resource.color}20`, color: resource.color }}>
+                <div
+                  className="resource-icon-small"
+                  style={{ backgroundColor: `${resource.color}20`, color: resource.color }}
+                >
                   <Icon size={20} />
                 </div>
                 <div className="resource-details">
