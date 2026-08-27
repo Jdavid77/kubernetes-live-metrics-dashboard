@@ -1,5 +1,5 @@
 # Serve with nginx (unprivileged)
-FROM nginxinc/nginx-unprivileged:stable-alpine as unprivileged
+FROM nginxinc/nginx-unprivileged:stable-alpine-slim as unprivileged
 
 # Update Alpine packages to fix security vulnerabilities
 USER root
