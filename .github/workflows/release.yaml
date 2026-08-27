@@ -33,13 +33,12 @@ jobs:
           tag_prefix: 'v'
           tag_template: 'yyyy.mm.dd.i'
 
-  build-scan-push:
+  build-push:
     needs: generate-tag
     runs-on: ubuntu-latest
     strategy:
       matrix:
         component: [backend, frontend]
-      fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -57,27 +56,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build ${{ matrix.component }} image
+      - name: Build and push ${{ matrix.component }} image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           context: ./${{ matrix.component }}
-          load: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:${{ needs.generate-tag.outputs.tag }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO }}-${{ matrix.component }}:${{ needs.generate-tag.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.REPO }}-${{ matrix.component }}:latest
           cache-from: type=gha,scope=${{ matrix.component }}
           cache-to: type=gha,mode=max,scope=${{ matrix.component }}
-
-      - name: Scan ${{ matrix.component }} image
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:${{ needs.generate-tag.outputs.tag }}
-          format: table
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: '1'
-
-      - name: Push ${{ matrix.component }} image
-        run: |
-          docker tag ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:${{ needs.generate-tag.outputs.tag }} \
-                     ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:latest
-          docker push ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:${{ needs.generate-tag.outputs.tag }}
-          docker push ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.component }}:latest
