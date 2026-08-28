@@ -28,7 +28,8 @@
     "postcss": "^8.5.18",
     "serialize-javascript": "^7.0.3",
     "svgo": "^3.3.4",
-    "underscore": "^1.13.8"
+    "underscore": "^1.13.8",
+    "webpack-dev-server": "^5.2.1"
   },
   "browserslist": {
     "production": [
