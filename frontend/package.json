@@ -23,6 +23,13 @@
       "react-app"
     ]
   },
+  "overrides": {
+    "nth-check": "^2.0.1",
+    "postcss": "^8.5.18",
+    "serialize-javascript": "^7.0.3",
+    "svgo": "^3.3.4",
+    "underscore": "^1.13.8"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
