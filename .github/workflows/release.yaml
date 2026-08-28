@@ -33,6 +33,17 @@ jobs:
           tag_prefix: 'v'
           tag_template: 'yyyy.mm.dd.i'
 
+      - name: Push tag
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${{ steps.tag.outputs.next_release_tag }}`,
+              sha: context.sha
+            })
+
   build-push:
     needs: generate-tag
     runs-on: ubuntu-latest
