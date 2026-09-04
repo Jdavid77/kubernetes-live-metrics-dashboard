@@ -8,6 +8,7 @@ on:
       - '.github/**'
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   semgrep:
@@ -27,7 +28,6 @@ jobs:
         run: semgrep ci
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-          
 
   gitleaks:
     name: Gitleaks
@@ -46,6 +46,8 @@ jobs:
   trivy-fs:
     name: Trivy filesystem
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -55,7 +57,47 @@ jobs:
         with:
           scan-type: fs
           scan-ref: .
-          format: table
+          format: json
+          output: trivy-results.json
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: '1'
+
+      - name: Create or update issue on findings
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          count=$(jq '[.Results[]?.Vulnerabilities // [] | .[]] | length' trivy-results.json)
+          if [ "$count" -eq 0 ]; then exit 0; fi
+
+          table=$(jq -r '
+            .Results[]? |
+            .Target as $t |
+            .Vulnerabilities // [] |
+            .[] |
+            "| \($t) | \(.PkgName) | \(.VulnerabilityID) | \(.Severity) | \(.InstalledVersion) | \(.FixedVersion // "N/A") |"
+          ' trivy-results.json)
+
+          body="## Trivy filesystem scan findings
+
+          Found **${count}** CRITICAL/HIGH vulnerability/ies with a fix available.
+
+          | Target | Package | CVE | Severity | Installed | Fixed |
+          |--------|---------|-----|----------|-----------|-------|
+          ${table}
+
+          _Last updated: $(date +%Y-%m-%d)_"
+
+          existing=$(gh issue list --label "security" --state open \
+            --search "Security: Trivy filesystem vulnerabilities" \
+            --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body "$body"
+          else
+            gh issue create \
+              --title "Security: Trivy filesystem vulnerabilities" \
+              --label "security" \
+              --body "$body"
+          fi
