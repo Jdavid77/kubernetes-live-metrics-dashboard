@@ -46,6 +46,8 @@ jobs:
   trivy-fs:
     name: Trivy filesystem
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -55,7 +57,36 @@ jobs:
         with:
           scan-type: fs
           scan-ref: .
-          format: table
+          format: json
+          output: trivy-results.json
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: '1'
+
+      - name: Create issue on findings
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          count=$(jq '[.Results[]?.Vulnerabilities // [] | .[]] | length' trivy-results.json)
+          if [ "$count" -eq 0 ]; then exit 0; fi
+
+          table=$(jq -r '
+            .Results[]? |
+            .Target as $t |
+            .Vulnerabilities // [] |
+            .[] |
+            "| \($t) | \(.PkgName) | \(.VulnerabilityID) | \(.Severity) | \(.InstalledVersion) | \(.FixedVersion // "N/A") |"
+          ' trivy-results.json)
+
+          gh issue create \
+            --title "Security: Trivy filesystem vulnerabilities ($(date +%Y-%m-%d))" \
+            --label "security" \
+            --body "## Trivy filesystem scan findings
+
+          Found **${count}** CRITICAL/HIGH vulnerability/ies with a fix available.
+
+          | Target | Package | CVE | Severity | Installed | Fixed |
+          |--------|---------|-----|----------|-----------|-------|
+          ${table}
+
