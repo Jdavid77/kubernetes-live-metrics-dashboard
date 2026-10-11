@@ -36,7 +36,10 @@ const Header = ({ isConnected }) => {
           <NavLink to="/" end className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
             <FiGrid size={16} /> Dashboard
           </NavLink>
-          <NavLink to="/architecture" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
+          <NavLink
+            to="/architecture"
+            className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}
+          >
             <FiLayers size={16} /> Architecture
           </NavLink>
         </div>

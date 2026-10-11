@@ -8,12 +8,19 @@ const Architecture = () => (
     <div className="container">
       <nav className="architecture-toc">
         {topics.map((topic) => (
-          <a key={topic.id} href={`#${topic.id}`} style={{ '--accent': topic.color }}>{topic.title}</a>
+          <a key={topic.id} href={`#${topic.id}`} style={{ '--accent': topic.color }}>
+            {topic.title}
+          </a>
         ))}
       </nav>
 
       {topics.map((topic) => (
-        <section key={topic.id} id={topic.id} className="topic-card" style={{ '--accent': topic.color }}>
+        <section
+          key={topic.id}
+          id={topic.id}
+          className="topic-card"
+          style={{ '--accent': topic.color }}
+        >
           <h2 className="topic-title">{topic.title}</h2>
           <p className="topic-summary">{topic.summary}</p>
 

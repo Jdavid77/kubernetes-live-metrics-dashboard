@@ -11,7 +11,14 @@ const topics = [
     lanes: [
       {
         label: 'Internet',
-        steps: ['Client', 'Cloudflare edge', 'cloudflared tunnel', 'Envoy external', 'HTTPRoute', 'App'],
+        steps: [
+          'Client',
+          'Cloudflare edge',
+          'cloudflared tunnel',
+          'Envoy external',
+          'HTTPRoute',
+          'App',
+        ],
       },
       {
         label: 'LAN',
@@ -19,13 +26,29 @@ const topics = [
       },
       {
         label: 'Remote',
-        steps: ['Device', 'Tailscale subnet router', 'Pi-hole DNS', 'Envoy internal', 'HTTPRoute', 'App'],
+        steps: [
+          'Device',
+          'Tailscale subnet router',
+          'Pi-hole DNS',
+          'Envoy internal',
+          'HTTPRoute',
+          'App',
+        ],
       },
     ],
     components: [
-      { name: 'Cloudflare + cloudflared', role: 'Public DNS, edge TLS/DDoS protection and the outbound tunnel into the cluster' },
-      { name: 'Envoy Gateway', role: 'Two Gateway API gateways: external (public) and internal (LAN only)' },
-      { name: 'External DNS', role: 'Two instances: external gateway routes go to Cloudflare, internal gateway routes go to Pi-hole' },
+      {
+        name: 'Cloudflare + cloudflared',
+        role: 'Public DNS, edge TLS/DDoS protection and the outbound tunnel into the cluster',
+      },
+      {
+        name: 'Envoy Gateway',
+        role: 'Two Gateway API gateways: external (public) and internal (LAN only)',
+      },
+      {
+        name: 'External DNS',
+        role: 'Two instances: external gateway routes go to Cloudflare, internal gateway routes go to Pi-hole',
+      },
       { name: 'Pi-hole', role: 'LAN DNS resolver, also used as the tailnet DNS server' },
       { name: 'Tailscale Operator', role: 'Subnet router advertising the LAN to the tailnet' },
       { name: 'cert-manager', role: "Let's Encrypt certificates for the gateways" },
@@ -57,7 +80,10 @@ const topics = [
       'Secrets never live in Git, not even encrypted. Akeyless is the single source of truth and External Secrets Operator syncs them into the cluster; SOPS is only used for the bootstrap credentials.',
     components: [
       { name: 'Akeyless', role: 'Hosted secrets manager, source of truth for every secret' },
-      { name: 'External Secrets Operator', role: 'Pulls secrets from Akeyless into Kubernetes Secrets every 5 minutes' },
+      {
+        name: 'External Secrets Operator',
+        role: 'Pulls secrets from Akeyless into Kubernetes Secrets every 5 minutes',
+      },
       { name: 'SOPS', role: 'Encrypts the few secrets needed before ESO can run' },
       { name: 'Terraform', role: 'Manages Akeyless configuration as code' },
     ],
@@ -87,7 +113,10 @@ const topics = [
       { name: 'OpenEBS', role: 'Local hostpath volumes for write-heavy, rebuildable data' },
       { name: 'Volsync', role: 'Snapshot-based PVC backups with Restic' },
       { name: 'Garage', role: 'In-cluster S3 object storage, the local backup target' },
-      { name: 'Cloudflare R2 / Backblaze B2', role: 'Offsite object storage for PVC and Postgres backups' },
+      {
+        name: 'Cloudflare R2 / Backblaze B2',
+        role: 'Offsite object storage for PVC and Postgres backups',
+      },
       { name: 'Postgres', role: 'Runs in Docker on the NAS, outside the cluster' },
     ],
     decisions: [
@@ -114,7 +143,10 @@ const topics = [
     components: [
       { name: 'kube-prometheus-stack', role: 'Prometheus, Alertmanager and the core exporters' },
       { name: 'Grafana Operator', role: 'Grafana with dashboards defined as CRs' },
-      { name: 'OpenTelemetry Collector', role: 'Collects pod logs, Kubernetes events and GitHub data' },
+      {
+        name: 'OpenTelemetry Collector',
+        role: 'Collects pod logs, Kubernetes events and GitHub data',
+      },
       { name: 'Loki', role: 'Log storage and querying' },
       { name: 'Gatus', role: 'Uptime checks declared as annotations on gateways and apps' },
       { name: 'Pushover', role: 'Push notifications to phone' },
