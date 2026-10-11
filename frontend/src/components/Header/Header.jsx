@@ -1,5 +1,6 @@
 import React from 'react';
-import { FiActivity } from 'react-icons/fi';
+import { NavLink } from 'react-router-dom';
+import { FiActivity, FiGrid, FiLayers } from 'react-icons/fi';
 import config from '../../config/env';
 import './Header.css';
 
@@ -30,6 +31,19 @@ const Header = ({ isConnected }) => {
           </div>
         </div>
       </div>
+      <nav className="header-nav">
+        <div className="container nav-tabs">
+          <NavLink to="/" end className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
+            <FiGrid size={16} /> Dashboard
+          </NavLink>
+          <NavLink
+            to="/architecture"
+            className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}
+          >
+            <FiLayers size={16} /> Architecture
+          </NavLink>
+        </div>
+      </nav>
     </header>
   );
 };
