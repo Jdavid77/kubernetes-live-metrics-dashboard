@@ -88,6 +88,7 @@ CRA (Create React App) + React 18. Key files:
 - `src/App.jsx` — root: `Header` + `Dashboard` inside `ErrorBoundary`
 - `src/components/Dashboard/` — `ClusterOverview` (metric tiles), `NodesSection` (node cards), `Stack` (infra labels from runtime config)
 - `src/components/ApplicationGrid/` — application cards with health status
+- `src/components/Architecture/` — `/architecture` page: topic sidebar (active topic in the URL hash), `FlowDiagram` swimlanes, and `icons.js`, the allowed values for a topic's `icon` field (keep in sync with the list in `config.yaml`)
 - `src/hooks/useMetrics.js` — subscribes to `/ws/metrics` via `useWebSocket`; falls back to HTTP polling
 - `src/hooks/useWebSocket.js` — WebSocket lifecycle with exponential-backoff reconnect (max 5 attempts)
 - `src/services/` — Axios REST clients for metrics, applications, pods, services, nodes
