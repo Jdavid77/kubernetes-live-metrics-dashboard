@@ -104,13 +104,15 @@ npm start
 | `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
 | `METRICS_REFRESH_INTERVAL` | `5s` | Metrics refresh interval |
 
-### Frontend Environment Variables
+### Frontend Configuration
+
+The frontend container takes one environment variable:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `REACT_APP_API_URL` | `http://localhost:8080` | Backend API URL |
-| `REACT_APP_WS_URL` | `ws://localhost:8080` | WebSocket URL |
-| `REACT_APP_REFRESH_INTERVAL` | `5000` | Fallback polling interval (ms) |
+| `NGINX_BACKEND_URL` | `localhost:8000` | Where nginx proxies `/api/` and `/ws/` |
+
+Everything else (refresh interval, logo, links, stack labels and the `/architecture` page content) is read by the browser from `config/config.yaml` at page load. The image ships a default in `frontend/public/config/config.yaml`; to override it, mount your own file at `/usr/share/nginx/html/config/config.yaml`, e.g. from a ConfigMap. See [`examples/config.example.yaml`](examples/config.example.yaml) for every field.
 
 ## Deploying to Kubernetes
 

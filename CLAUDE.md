@@ -86,16 +86,16 @@ There is no database — all state is live-fetched from the Kubernetes API; only
 
 CRA (Create React App) + React 18. Key files:
 - `src/App.jsx` — root: `Header` + `Dashboard` inside `ErrorBoundary`
-- `src/components/Dashboard/` — `ClusterOverview` (metric tiles), `NodesSection` (node cards), `Stack` (infra labels from env)
+- `src/components/Dashboard/` — `ClusterOverview` (metric tiles), `NodesSection` (node cards), `Stack` (infra labels from runtime config)
 - `src/components/ApplicationGrid/` — application cards with health status
 - `src/hooks/useMetrics.js` — subscribes to `/ws/metrics` via `useWebSocket`; falls back to HTTP polling
 - `src/hooks/useWebSocket.js` — WebSocket lifecycle with exponential-backoff reconnect (max 5 attempts)
 - `src/services/` — Axios REST clients for metrics, applications, pods, services, nodes
-- `src/config/env.js` — merges `window._env_` (Docker/production) and `process.env` (dev)
+- `src/config/env.js` — `config` defaults plus `loadConfig()`, which fetches `/config/config.yaml` before the first render (`src/index.js`)
 
 ### Runtime Configuration
 
-Frontend env vars are injected at container start by `frontend/entrypoint.sh`, which writes `frontend/public/env-config.js` from container env vars as `window._env_`. In dev mode, use `REACT_APP_*` prefixes in `.env`.
+Frontend settings and `/architecture` content come from `frontend/public/config/config.yaml`, fetched by the browser at runtime; deployments override it by mounting a file over `/usr/share/nginx/html/config/` (example: `examples/config.example.yaml`). The only container env var is `NGINX_BACKEND_URL`, substituted into `nginx.conf` by the base image's template entrypoint (`/etc/nginx/templates/`).
 
 ### CI / Release
 

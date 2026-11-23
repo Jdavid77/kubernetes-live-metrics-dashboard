@@ -1,45 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import yaml from 'js-yaml';
+import React from 'react';
 import FlowDiagram from './FlowDiagram';
-import LoadingSpinner from '../Common/LoadingSpinner';
+import config from '../../config/env';
 import './Architecture.css';
 
-// Loaded at runtime so the content can be changed without rebuilding the image:
-// mount a ConfigMap over /usr/share/nginx/html/config/ to override the default.
-const TOPICS_URL = `${process.env.PUBLIC_URL}/config/architecture.yaml`;
-
+// Topics come from the `architecture` section of the runtime config.yaml.
 const Architecture = () => {
-  const [topics, setTopics] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const topics = config.ARCHITECTURE_TOPICS;
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        const res = await fetch(TOPICS_URL, { cache: 'no-cache' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = yaml.load(await res.text());
-        // nginx falls back to index.html for missing files, so check the shape.
-        if (!Array.isArray(data?.topics)) throw new Error('missing "topics" list');
-        setTopics(data.topics);
-        setError(null);
-      } catch (err) {
-        console.error('Error loading architecture topics:', err);
-        setError('Failed to load architecture');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTopics();
-  }, []);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
-    return <div className="text-center text-muted">{error}</div>;
+  if (!topics) {
+    return <div className="text-center text-muted">Failed to load architecture</div>;
   }
 
   return (
