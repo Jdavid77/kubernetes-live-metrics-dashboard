@@ -1,0 +1,70 @@
+# Runtime configuration for the frontend, loaded by the browser on page load.
+#
+# This file is a placeholder baked into the image. Replace it per deployment by
+# mounting your own copy at /usr/share/nginx/html/config/config.yaml (e.g. from
+# a ConfigMap); no rebuild needed. Every field is optional; missing values fall
+# back to built-in defaults.
+#
+# Keep it public-safe: describe roles, not identifiers (no IPs, ports,
+# bucket names or secret paths).
+
+# Fallback polling interval (ms) when the WebSocket is down. Default: 5000.
+refreshInterval: 5000
+
+# Header logo. Hidden when empty.
+# logoUrl: https://example.com/logo.png
+
+# Social links on the dashboard. Each is hidden when empty.
+# links:
+#   github: https://github.com/example
+#   linkedin: https://www.linkedin.com/in/example
+
+# Infrastructure labels on the dashboard.
+stack:
+  os: Talos
+  storage: Longhorn
+  cni: Cilium
+  loadBalancer: Envoy Gateway
+  gitops: Flux CD
+
+# Content of the /architecture page.
+architecture:
+  topics:
+    # Each topic renders as a card, with a link to it in the table of contents.
+    - id: ingress # required, unique; used as the #anchor in the URL
+      title: Traffic Ingress # required
+      # Optional accent colour. One of: var(--color-primary), var(--color-secondary),
+      # var(--color-info), var(--color-success), var(--color-warning), var(--color-danger).
+      # Defaults to var(--color-primary).
+      color: var(--color-info)
+      # Required. One short paragraph. `>-` folds the lines into one.
+      summary: >-
+        How requests reach applications in the cluster, from the outside world and
+        from the local network.
+
+      # Optional flow diagram: one row per lane, steps joined by arrows.
+      # Steps must be unique within a lane.
+      lanes:
+        - label: Internet
+          steps: [Client, CDN, Gateway, App]
+        - label: LAN
+          steps: [Client, Local DNS, Gateway, App]
+
+      # Optional. Names must be unique within the topic.
+      components:
+        - name: Gateway
+          role: Terminates TLS and routes requests to apps
+        - name: Local DNS
+          role: Resolves internal hostnames on the LAN
+
+      # Optional. Titles must be unique within the topic.
+      decisions:
+        - title: A CDN in front of public apps
+          why: >-
+            Hides the home IP and absorbs attacks before they reach the cluster.
+
+    # A minimal topic: only the required fields.
+    - id: storage
+      title: Storage
+      summary: >-
+        Where application data lives and how it is backed up.

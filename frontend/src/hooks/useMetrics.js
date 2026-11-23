@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import useWebSocket from './useWebSocket';
 import { getMetrics } from '../services/metricsService';
-import { REFRESH_INTERVAL } from '../utils/constants';
+import config from '../config/env';
 
 const useMetrics = () => {
   const [metrics, setMetrics] = useState(null);
@@ -40,7 +40,7 @@ const useMetrics = () => {
       fetchMetrics();
 
       // Poll every REFRESH_INTERVAL
-      intervalId = setInterval(fetchMetrics, REFRESH_INTERVAL);
+      intervalId = setInterval(fetchMetrics, config.REFRESH_INTERVAL);
     }
 
     return () => {

@@ -1,35 +1,56 @@
+import yaml from 'js-yaml';
+
 /**
- * Environment configuration helper
- * - In development: reads from process.env (build-time)
- * - In production (Docker): reads from window._env_ (runtime)
+ * Runtime configuration, loaded from /config/config.yaml before the app renders
+ * (see index.js). Override per deployment by mounting a ConfigMap over
+ * /usr/share/nginx/html/config/. Values missing from the file keep these defaults.
  */
-const getEnv = (key, defaultValue = '') => {
-  // Runtime config (Docker container)
-  if (window._env_ && window._env_[key] !== undefined && window._env_[key] !== '') {
-    return window._env_[key];
-  }
-
-  // Build-time config (development)
-  if (process.env[key] !== undefined && process.env[key] !== '') {
-    return process.env[key];
-  }
-
-  return defaultValue;
-};
+const CONFIG_URL = `${process.env.PUBLIC_URL}/config/config.yaml`;
 
 export const config = {
   API_URL: '/api',
   WS_URL: '/ws',
-  REFRESH_INTERVAL: parseInt(getEnv('REACT_APP_REFRESH_INTERVAL', '5000'), 10),
-  VERSION: getEnv('REACT_APP_VERSION', '1.0.0'),
-  LOGO_URL: getEnv('REACT_APP_LOGO_URL', ''),
-  GITHUB_URL: getEnv('REACT_APP_GITHUB_URL', ''),
-  LINKEDIN_URL: getEnv('REACT_APP_LINKEDIN_URL', ''),
-  INFRA_OS: getEnv('REACT_APP_INFRA_OS', 'Talos'),
-  INFRA_STORAGE: getEnv('REACT_APP_INFRA_STORAGE', 'Longhorn/OpenEBS'),
-  INFRA_CNI: getEnv('REACT_APP_INFRA_CNI', 'Cilium'),
-  INFRA_LOAD_BALANCER: getEnv('REACT_APP_INFRA_LOAD_BALANCER', 'Traefik'),
-  INFRA_GITOPS: getEnv('REACT_APP_INFRA_GITOPS', 'Flux CD'),
+  REFRESH_INTERVAL: 5000,
+  LOGO_URL: '',
+  GITHUB_URL: '',
+  LINKEDIN_URL: '',
+  INFRA_OS: 'Talos',
+  INFRA_STORAGE: 'Longhorn/OpenEBS',
+  INFRA_CNI: 'Cilium',
+  INFRA_LOAD_BALANCER: 'Traefik',
+  INFRA_GITOPS: 'Flux CD',
+  ARCHITECTURE_TOPICS: null,
+};
+
+// Never rejects: on failure the app renders with the defaults above.
+export const loadConfig = async () => {
+  try {
+    const res = await fetch(CONFIG_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = yaml.load(await res.text());
+    // nginx falls back to index.html for missing files, so check the shape.
+    if (typeof data !== 'object' || data === null) throw new Error('not a YAML mapping');
+
+    const { links = {}, stack = {}, architecture = {} } = data;
+    const refreshInterval = Number(data.refreshInterval);
+    const values = {
+      REFRESH_INTERVAL: refreshInterval > 0 ? refreshInterval : undefined,
+      LOGO_URL: data.logoUrl,
+      GITHUB_URL: links.github,
+      LINKEDIN_URL: links.linkedin,
+      INFRA_OS: stack.os,
+      INFRA_STORAGE: stack.storage,
+      INFRA_CNI: stack.cni,
+      INFRA_LOAD_BALANCER: stack.loadBalancer,
+      INFRA_GITOPS: stack.gitops,
+      ARCHITECTURE_TOPICS: Array.isArray(architecture.topics) ? architecture.topics : undefined,
+    };
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') config[key] = value;
+    });
+  } catch (err) {
+    console.error('Error loading config, using defaults:', err);
+  }
 };
 
 export default config;
