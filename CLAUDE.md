@@ -95,7 +95,7 @@ CRA (Create React App) + React 18. Key files:
 
 ### Runtime Configuration
 
-Frontend settings and `/architecture` content come from `frontend/public/config/config.yaml`, fetched by the browser at runtime; deployments override it by mounting a file over `/usr/share/nginx/html/config/` (example: `examples/config.example.yaml`). The only container env var is `NGINX_BACKEND_URL`, substituted into `nginx.conf` by the base image's template entrypoint (`/etc/nginx/templates/`).
+Frontend settings and `/architecture` content come from `frontend/public/config/config.yaml`, fetched by the browser at runtime; deployments override it by mounting a file over `/usr/share/nginx/html/config/`. The only container env var is `NGINX_BACKEND_URL`, substituted into `nginx.conf` by the base image's template entrypoint (`/etc/nginx/templates/`).
 
 ### CI / Release
 

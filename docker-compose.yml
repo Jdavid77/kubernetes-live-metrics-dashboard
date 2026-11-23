@@ -28,8 +28,8 @@ services:
       - NGINX_BACKEND_URL=backend:8000
     volumes:
       # Runtime config (settings + /architecture content), like a ConfigMap would in-cluster.
-      # Remove to use the default from frontend/public/config/config.yaml.
-      - ./examples/config.example.yaml:/usr/share/nginx/html/config/config.yaml:ro
+      # Edits show up on page refresh, no rebuild needed.
+      - ./frontend/public/config/config.yaml:/usr/share/nginx/html/config/config.yaml:ro
     depends_on:
       - backend
     restart: unless-stopped
