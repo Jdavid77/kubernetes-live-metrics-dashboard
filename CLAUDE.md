@@ -88,6 +88,7 @@ CRA (Create React App) + React 18. Key files:
 - `src/App.jsx` — root: `Header` + `Dashboard` inside `ErrorBoundary`
 - `src/components/Dashboard/` — `ClusterOverview` (metric tiles), `NodesSection` (node cards), `Stack` (infra labels from runtime config)
 - `src/components/ApplicationGrid/` — application cards with health status
+- `src/components/Architecture/` — `/architecture` page: topic sidebar (active topic in the URL hash), `FlowDiagram` swimlanes, and `icons.js`, the allowed values for a topic's `icon` field (keep in sync with the list in `config.yaml`)
 - `src/hooks/useMetrics.js` — subscribes to `/ws/metrics` via `useWebSocket`; falls back to HTTP polling
 - `src/hooks/useWebSocket.js` — WebSocket lifecycle with exponential-backoff reconnect (max 5 attempts)
 - `src/services/` — Axios REST clients for metrics, applications, pods, services, nodes
@@ -99,4 +100,6 @@ Frontend settings and `/architecture` content come from `frontend/public/config/
 
 ### CI / Release
 
-Conventional commits on `main` trigger `semantic-release` (`.releaserc.js`), which bumps `frontend/package.json` version, generates CHANGELOG, creates a GitHub release, then triggers a multi-arch Docker image build pushed to GHCR (`ghcr.io/Jdavid77/kubernetes-live-metrics-dashboard-{backend,frontend}`).
+PRs to `main` run build (`ci.yaml`), lint (`lint.yml`: golangci-lint, `prettier --check src/` in `frontend/`, actionlint), Trivy image scans (`container-scan.yml`) and security checks (`security.yml`: Semgrep, Gitleaks, Trivy filesystem).
+
+Every push to `main` (outside `.github/`) runs `release.yaml`: it tags the commit with a date-based version (`vYYYY.MM.DD.N`), then builds both images and pushes them to GHCR as `ghcr.io/<owner>/<repo>-{backend,frontend}`, tagged with that version and `latest`. There is no changelog or version bump. Deployments pick up new tags through Flux image automation.

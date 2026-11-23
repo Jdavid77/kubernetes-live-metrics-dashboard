@@ -30,9 +30,12 @@ stack:
 # Content of the /architecture page.
 architecture:
   topics:
-    # Each topic renders as a card, with a link to it in the table of contents.
+    # Each topic gets an entry in the sidebar and is shown one at a time.
     - id: ingress # required, unique; used as the #anchor in the URL
       title: Traffic Ingress # required
+      # Optional icon. One of: activity, box, cloud, cpu, database, git-branch, globe,
+      # hard-drive, key, layers, lock, server, shield. Defaults to layers.
+      icon: globe
       # Optional accent colour. One of: var(--color-primary), var(--color-secondary),
       # var(--color-info), var(--color-success), var(--color-warning), var(--color-danger).
       # Defaults to var(--color-primary).
@@ -66,5 +69,6 @@ architecture:
     # A minimal topic: only the required fields.
     - id: storage
       title: Storage
+      icon: database
       summary: >-
         Where application data lives and how it is backed up.
